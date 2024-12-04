@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Life in Numbers</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      margin: 20px 0;
+      font-size: 2.5em;
+    }
+    p {
+      font-size: 1.2em;
+      margin: 10px 0;
+    }
+    input[type="date"] {
+      padding: 10px;
+      font-size: 1em;
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .output {
+      margin-top: 20px;
+    }
+    a {
+      margin-top: 20px;
+      text-decoration: none;
+      color: #4CAF50;
+      font-size: 1em;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Your Life in Numbers</h1>
+  <p>Enter your birthdate to see some cool stats about your life!</p>
+  <input type="date" id="birthdate" max="2024-12-31">
+  <button onclick="calculateStats()">Calculate</button>
+  <div class="output" id="output"></div>
+  <a href="index.html">← Back to Menu</a>
+
+  <script>
+    function calculateStats() {
+      const birthdate = new Date(document.getElementById("birthdate").value);
+      if (isNaN(birthdate)) {
+        document.getElementById("output").innerHTML = "<p>Please enter a valid date.</p>";
+        return;
+      }
+      
+      const now = new Date();
+      const diffTime = now - birthdate;
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const diffYears = now.getFullYear() - birthdate.getFullYear();
+      const heartbeats = Math.floor(diffYears * 365 * 80); // Approx 80 beats per minute
+
+      document.getElementById("output").innerHTML = `
+        <p>You have been alive for <strong>${diffDays.toLocaleString()}</strong> days.</p>
+        <p>Your heart has beaten approximately <strong>${heartbeats.toLocaleString()}</strong> times.</p>
+        <p>Light has traveled <strong>${(diffDays * 24 * 60 * 60 * 299792).toLocaleString()} km</strong> since your birth.</p>
+      `;
+    }
+  </script>
+</body>
+</html>
