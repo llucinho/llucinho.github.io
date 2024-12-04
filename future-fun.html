@@ -8,25 +8,47 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      padding: 20px;
       background-color: #eef7fa;
       color: #333;
     }
     h1 {
+      text-align: center;
       font-size: 2.5em;
       margin-bottom: 20px;
     }
-    p {
-      font-size: 1.2em;
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    input, select, button {
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .output {
+      margin-top: 20px;
       text-align: center;
+      font-size: 1.2em;
+      color: #007BFF;
     }
     a {
+      display: block;
       margin-top: 20px;
+      text-align: center;
       text-decoration: none;
       color: #007BFF;
       font-size: 1em;
@@ -38,8 +60,42 @@
 </head>
 <body>
   <h1>Future Fun</h1>
-  <p>Imagine what’s possible in the future! This page will explore fun predictions and simulations.</p>
-  <p>Check back soon for exciting updates!</p>
+  <form id="futureForm">
+    <label for="name">What is your name?</label>
+    <input type="text" id="name" placeholder="Enter your name" required>
+    
+    <label for="color">Pick your favorite color:</label>
+    <select id="color">
+      <option value="red">Red</option>
+      <option value="blue">Blue</option>
+      <option value="green">Green</option>
+      <option value="yellow">Yellow</option>
+      <option value="purple">Purple</option>
+    </select>
+    
+    <label for="hobby">What's your dream hobby?</label>
+    <input type="text" id="hobby" placeholder="e.g., painting, coding" required>
+    
+    <button type="button" onclick="predictFuture()">Reveal My Future</button>
+  </form>
+  <div class="output" id="output"></div>
   <a href="index.html">← Back to Menu</a>
+
+  <script>
+    function predictFuture() {
+      const name = document.getElementById('name').value;
+      const color = document.getElementById('color').value;
+      const hobby = document.getElementById('hobby').value;
+      const predictions = [
+        `In 2030, ${name}, you'll open a ${color}-themed cafe where people can enjoy ${hobby} classes!`,
+        `${name}, you'll become a world-famous ${hobby} expert, painting the world ${color}.`,
+        `By 2040, ${name}, you'll move to a ${color} castle and teach ${hobby} to royalty.`,
+        `${name}, your ${color} ${hobby} creations will be auctioned for millions in the future.`,
+        `The future holds greatness for you, ${name}! Your love for ${color} and ${hobby} will unite people worldwide.`,
+      ];
+      const randomPrediction = predictions[Math.floor(Math.random() * predictions.length)];
+      document.getElementById('output').innerText = randomPrediction;
+    }
+  </script>
 </body>
 </html>
