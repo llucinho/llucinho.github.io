@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Snake Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        #game-container {
+            text-align: center;
+        }
+        #game-title {
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        #score {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        #gameCanvas {
+            border: 2px solid #333;
+            background-color: white;
+        }
+        #gameOverModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        #gameOverContent {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        #restartBtn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="game-title">Slither.io Game</div>
+        <div id="score">Score: 0</div>
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <div id="gameOverModal">
+            <div id="gameOverContent">
+                <h2>Game Over</h2>
+                <p id="finalScore">Your Score: 0</p>
+                <button id="restartBtn">Restart Game</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game Configuration
+        const config = {
+            width: 800,
+            height: 600,
+            playerSize: 10,
+            foodSize: 5,
+            playerSpeed: 3,
+            initialLength: 5
+        };
+
+        // DOM Elements
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreDisplay = document.getElementById('score');
+        const gameOverModal = document.getElementById('gameOverModal');
+        const finalScoreDisplay = document.getElementById('finalScore');
+        const restartBtn = document.getElementById('restartBtn');
+
+        // Game State Variables
+        let score = 0;
+        let gameOver = false;
+        let player, food;
+
+        // Player Class
+        class Player {
+            constructor() {
+                this.x = config.width / 2;
+                this.y = config.height / 2;
+                this.body = [];
+                this.direction = { x: 1, y: 0 };
+                this.length = config.initialLength;
+
+                // Initialize body segments
+                for (let i = 0; i < this.length; i++) {
+                    this.body.push({ 
+                        x: this.x - i * config.playerSize, 
+                        y: this.y 
+                    });
+                }
+            }
+
+            move() {
+                // Move body segments
+                for (let i = this.body.length - 1; i > 0; i--) {
+                    this.body[i].x = this.body[i-1].x;
+                    this.body[i].y = this.body[i-1].y;
+                }
+
+                // Move head
+                this.body[0].x += this.direction.x * config.playerSpeed;
+                this.body[0].y += this.direction.y * config.playerSpeed;
+            }
+
+            grow() {
+                const lastSegment = this.body[this.body.length - 1];
+                this.body.push({ 
+                    x: lastSegment.x, 
+                    y: lastSegment.y 
+                });
+            }
+        }
+
+        // Food Class
+        class Food {
+            constructor() {
+                this.x = Math.random() * (config.width - config.foodSize);
+                this.y = Math.random() * (config.height - config.foodSize);
+            }
+
+            draw() {
+                ctx.fillStyle = 'red';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, config.foodSize, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Collision Detection
+        function checkCollision() {
+            const head = player.body[0];
+
+            // Food Collision
+            const distance = Math.sqrt(
+                Math.pow(head.x - food.x, 2) + 
+                Math.pow(head.y - food.y, 2)
+            );
+            if (distance < config.playerSize) {
+                player.grow();
+                food = new Food();
+                score++;
+                scoreDisplay.textContent = `Score: ${score}`;
+            }
+
+            // Wall Collision
+            if (
+                head.x < 0 || 
+                head.x > config.width || 
+                head.y < 0 || 
+                head.y > config.height
+            ) {
+                endGame();
+            }
+
+            // Self Collision
+            for (let i = 1; i < player.body.length; i++) {
+                if (
+                    head.x === player.body[i].x && 
+                    head.y === player.body[i].y
+                ) {
+                    endGame();
+                }
+            }
+        }
+
+        // Game Loop
+        function gameLoop() {
+            if (gameOver) return;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, config.width, config.height);
+
+            // Draw and update game elements
+            food.draw();
+            player.move();
+            checkCollision();
+
+            // Draw player
+            ctx.fillStyle = 'green';
+            player.body.forEach(segment => {
+                ctx.beginPath();
+                ctx.arc(segment.x, segment.y, config.playerSize/2, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Continue game loop
+            requestAnimationFrame(gameLoop);
+        }
+
+        // End Game Function
+        function endGame() {
+            gameOver = true;
+            finalScoreDisplay.textContent = `Your Score: ${score}`;
+            gameOverModal.style.display = 'flex';
+        }
+
+        // Restart Game Function
+        function restartGame() {
+            player = new Player();
+            food = new Food();
+            score = 0;
+            gameOver = false;
+            scoreDisplay.textContent = 'Score: 0';
+            gameOverModal.style.display = 'none';
+            gameLoop();
+        }
+
+        // Keyboard Controls
+        document.addEventListener('keydown', (e) => {
+            if (gameOver) return;
+
+            switch(e.key) {
+                case 'ArrowUp': 
+                    if (player.direction.y === 0) player.direction = { x: 0, y: -1 }; 
+                    break;
+                case 'ArrowDown': 
+                    if (player.direction.y === 0) player.direction = { x: 0, y: 1 }; 
+                    break;
+                case 'ArrowLeft': 
+                    if (player.direction.x === 0) player.direction = { x: -1, y: 0 }; 
+                    break;
+                case 'ArrowRight': 
+                    if (player.direction.x === 0) player.direction = { x: 1, y: 0 }; 
+                    break;
+            }
+        });
+
+        // Initialize Game
+        function init() {
+            player = new Player();
+            food = new Food();
+            restartBtn.addEventListener('click', restartGame);
+            gameLoop();
+        }
+
+        // Start the game
+        init();
+    </script>
+</body>
+</html>
