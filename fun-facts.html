@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun Facts</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #eef7fa;
+      color: #333;
+      overflow-x: hidden;
+      transition: background-color 0.5s ease;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 3em;
+      color: #4CAF50;
+      margin-top: 50px;
+      text-transform: uppercase;
+    }
+
+    .fact-container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1.2em;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+      transform: scale(1.1);
+    }
+
+    .quiz-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .quiz-question {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+
+    .quiz-options {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .quiz-options li {
+      margin: 10px 0;
+    }
+
+    .quiz-options input[type="radio"] {
+      margin-right: 10px;
+    }
+
+    .quiz-result {
+      font-size: 1.2em;
+      text-align: center;
+      margin-top: 20px;
+      color: #4CAF50;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Fun Facts</h1>
+
+  <!-- Random Fun Fact Generator -->
+  <div class="fact-container" id="factContainer">
+    <h2>Did you know?</h2>
+    <p id="randomFact">Click the button below to get a random fun fact!</p>
+    <button onclick="generateRandomFact()">Generate Fun Fact</button>
+  </div>
+
+  <!-- Fun Fact Quiz Section -->
+  <div class="quiz-container">
+    <div class="quiz-question" id="quizQuestion">
+      What is your favorite animal?
+    </div>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="animal" value="Elephant" onclick="showQuizResult('Elephant')"> Elephant
+      </li>
+      <li>
+        <input type="radio" name="animal" value="Tiger" onclick="showQuizResult('Tiger')"> Tiger
+      </li>
+      <li>
+        <input type="radio" name="animal" value="Dolphin" onclick="showQuizResult('Dolphin')"> Dolphin
+      </li>
+      <li>
+        <input type="radio" name="animal" value="Penguin" onclick="showQuizResult('Penguin')"> Penguin
+      </li>
+    </ul>
+    <div class="quiz-result" id="quizResult"></div>
+  </div>
+
+  <script>
+    // Random Fun Facts
+    const funFacts = [
+      "Did you know? Honey never spoils. Archaeologists have found pots of honey in ancient tombs that are over 3,000 years old!",
+      "The Eiffel Tower can grow by 6 inches during hot weather due to the expansion of the iron.",
+      "An octopus has three hearts: one pumps blood to the body, and two pump it to the gills.",
+      "Bananas are berries, but strawberries are not!",
+      "The longest hiccuping spree lasted for 68 years!",
+      "A day on Venus is longer than a year on Venus."
+    ];
+
+    function generateRandomFact() {
+      const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)];
+      document.getElementById("randomFact").innerText = randomFact;
+    }
+
+    // Fun Fact Quiz
+    function showQuizResult(animal) {
+      let result = "";
+      if (animal === "Elephant") {
+        result = "You are wise and strong like an elephant!";
+      } else if (animal === "Tiger") {
+        result = "You are fierce and independent like a tiger!";
+      } else if (animal === "Dolphin") {
+        result = "You are intelligent and playful like a dolphin!";
+      } else if (animal === "Penguin") {
+        result = "You are charming and social like a penguin!";
+      }
+      document.getElementById("quizResult").innerText = `You chose ${animal}. ${result}`;
+    }
+  </script>
+
+</body>
+</html>
